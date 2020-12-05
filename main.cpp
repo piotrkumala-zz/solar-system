@@ -12,7 +12,7 @@ struct Spherical
     float getZ() const { return distance * std::cos(theta)*std::sin(fi); }
 };
 
-Spherical camera(30.0f, 0.2f, 1.2f), light_position(4.0f, 0.2f, 1.2f);
+Spherical camera(30.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
 float fov = 45.0f;
 float timer = 0.0;
@@ -65,7 +65,7 @@ void reshapeScreen(sf::Vector2u size)
 
 void drawScene()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
     glLoadIdentity();
 
     Spherical north_of_camera(camera.distance, camera.theta + 0.01f, camera.fi);
@@ -231,8 +231,8 @@ int main()
 {
     bool running = true;
     sf::ContextSettings context(24, 0, 4, 4, 5);
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Open GL Lab1 04", 7U, context);
-    int shift_key_state = 1;
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Solar system", 7U, context);
+    float shift_key_state = 1.0f;
     sf::Clock clock;
     sf::Vector2i mouse_last_position(0, 0); //new
 
@@ -248,6 +248,8 @@ int main()
 
         while (window.pollEvent(event))
         {
+            shift_key_state = 1.0f;
+
             if (event.type == sfe::Closed || (event.type == sfe::KeyPressed && event.key.code == sfk::Escape) ) running = false;
             if (event.type == sfe::Resized) reshapeScreen(window.getSize());
             //---------------------- BEGIN new -------------------------------------------------------
@@ -268,18 +270,13 @@ int main()
         if (sfk::isKeyPressed(sfk::Up)) camera.theta += 0.01f;
         if (sfk::isKeyPressed(sfk::Down)) camera.theta -= 0.01f;
 
-        if (sfk::isKeyPressed(sfk::I)) light_position.fi -= 0.01f;
-        if (sfk::isKeyPressed(sfk::O)) light_position.fi += 0.01f;
-        if (sfk::isKeyPressed(sfk::K)) light_position.theta += 0.01f;
-        if (sfk::isKeyPressed(sfk::L)) light_position.theta -= 0.01f;
-
-        if (sfk::isKeyPressed(sfk::LShift)) shift_key_state = -1;
-        if (sfk::isKeyPressed(sfk::Q)) pos.x += 0.01f*shift_key_state;
-        if (sfk::isKeyPressed(sfk::A)) pos.y += 0.01f*shift_key_state;
-        if (sfk::isKeyPressed(sfk::Z)) pos.z += 0.01f*shift_key_state;
-        if (sfk::isKeyPressed(sfk::W)) scale.x += 0.01f*shift_key_state;
-        if (sfk::isKeyPressed(sfk::S)) scale.y += 0.01f*shift_key_state;
-        if (sfk::isKeyPressed(sfk::X)) scale.z += 0.01f*shift_key_state;
+        if (sfk::isKeyPressed(sfk::LShift)) shift_key_state = -1.0f;
+        if (sfk::isKeyPressed(sfk::Q)) pos.x += 0.05f*shift_key_state;
+        if (sfk::isKeyPressed(sfk::A)) pos.y += 0.05f*shift_key_state;
+        if (sfk::isKeyPressed(sfk::Z)) pos.z += 0.05f*shift_key_state;
+        if (sfk::isKeyPressed(sfk::W)) scale.x += 0.05f*shift_key_state;
+        if (sfk::isKeyPressed(sfk::S)) scale.y += 0.05f*shift_key_state;
+        if (sfk::isKeyPressed(sfk::X)) scale.z += 0.05f*shift_key_state;
         if (sfk::isKeyPressed(sfk::E)) rot.x += 0.5f*shift_key_state;
         if (sfk::isKeyPressed(sfk::D)) rot.y += 0.5f*shift_key_state;
         if (sfk::isKeyPressed(sfk::C)) rot.z += 0.5f*shift_key_state;
