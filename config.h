@@ -16,15 +16,17 @@ const GLfloat jupiterRadius = 0.6;
 const GLfloat saturnRadius = 0.5;
 const GLfloat uranusRadius = 0.3;
 const GLfloat neptuneRadius = 0.3;
+const GLfloat moonRadius = 0.04;
 
 const GLfloat mercuryOrbitRadius = 1.5;
-const GLfloat venusOrbitRadius = 2.0;
-const GLfloat earthOrbitRadius = 2.5;
-const GLfloat marsOrbitRadius = 3.0;
-const GLfloat jupiterOrbitRadius = 5.0;
-const GLfloat saturnOrbitRadius =  7.0;
-const GLfloat uranusOrbitRadius = 8.5;
-const GLfloat neptuneOrbitRadius = 9.5;
+const GLfloat venusOrbitRadius = 2.5;
+const GLfloat earthOrbitRadius = 3.5;
+const GLfloat marsOrbitRadius = 4.5;
+const GLfloat jupiterOrbitRadius = 7.0;
+const GLfloat saturnOrbitRadius =  9.0;
+const GLfloat uranusOrbitRadius = 10.5;
+const GLfloat neptuneOrbitRadius = 11.5;
+const GLfloat moonOrbitRadius = 0.5;
 
 const GLfloat mercuryInclination = 7;
 const GLfloat venusInclination = 3.4;
@@ -43,6 +45,7 @@ const GLfloat jupiterOrbitDuration = 4331;
 const GLfloat saturnOrbitDuration = 10747;
 const GLfloat uranusOrbitDuration = 30589;
 const GLfloat neptuneOrbitDuration = 59800;
+const GLfloat lunarCycle = 29.53;
 
 const GLfloat mercuryRotationDuration = 1407.6 / 23.9;
 const GLfloat venusRotationDuration = -5832.5 / 23.9;
@@ -71,7 +74,7 @@ const std::string saturnTexturePath = "Textures/saturnmap.bmp";
 const std::string saturnRingTexturePath = "Textures/saturnringmap.bmp";
 const std::string uranusTexturePath = "Textures/uranusmap.bmp";
 const std::string neptuneTexturePath = "Textures/neptunemap.bmp";
-
+const std::string moonTexturePath = "Textures/moonmap.bmp";
 #endif //GRAFIKA3D_CONFIG_H
 
 #pragma clang diagnostic pop

@@ -25,16 +25,13 @@ int main()
 {
     Spherical camera(20.0f, 0.2f, 1.2f);
     sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
-    float fov = 45.0f;
-    float timer = 0.0;
-    GLfloat CurrentEarthRotation;
-    GLfloat EarthDayIncrement = 1;
+    float fov = 45.0f, timer = 0.0, shift_key_state = 1.0f;
+    GLfloat CurrentEarthRotation, EarthDayIncrement = 1;
     bool running = true;
-    sf::ContextSettings context(24, 0, 4, 4, 5);
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Solar system", 7U, context);
-    float shift_key_state = 1.0f;
+    sf::ContextSettings context(24, 0, 10, 4, 5);
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Solar system", 7U, context);
     sf::Clock clock;
-    sf::Vector2i mouse_last_position(0, 0); //new
+    sf::Vector2i mouse_last_position(0, 0);
 
     window.setVerticalSyncEnabled(true);
     reshapeScreen(window.getSize(), fov);
@@ -54,7 +51,7 @@ int main()
 
             if (event.type == sfe::Closed || (event.type == sfe::KeyPressed && event.key.code == sfk::Escape) ) running = false;
             if (event.type == sfe::Resized) reshapeScreen(window.getSize(), fov);
-            //---------------------- BEGIN new -------------------------------------------------------
+
             if (event.type == sfe::MouseButtonPressed &&  event.mouseButton.button == sf::Mouse::Left)
             {
                 mouse_last_position = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
@@ -65,7 +62,6 @@ int main()
                 camera.theta += 2.0f / window.getSize().y*(event.mouseMove.y - mouse_last_position.y);
                 mouse_last_position = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
             }
-            //---------------------- END new -------------------------------------------------------
         }
         if (sfk::isKeyPressed(sfk::Left)) camera.fi -= 0.01f;
         if (sfk::isKeyPressed(sfk::Right)) camera.fi += 0.01f;
@@ -98,19 +94,19 @@ void drawPlanet(GLUquadric *quad, const std::string &textureName, const GLfloat 
                 const GLfloat orbitInclination, const GLfloat CurrentEarthRotation, const GLfloat rotationDuration,
                 const GLfloat orbitDuration) {
     glPushMatrix();
-    sf::Texture mercuryTexture;
-    mercuryTexture.setSmooth(true);
-    mercuryTexture.loadFromFile(textureName);
-    glColor3f(1,1,1);
-    sf::Texture::bind(&mercuryTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef( orbitInclination, 0.0, 0.0, 1.0);
-    glRotatef( 360.0 * (CurrentEarthRotation/orbitDuration), 0.0, 1.0, 0.0);
-    glTranslatef(orbitRadius,0,0);
-    glRotatef( 360.0 * (CurrentEarthRotation /
-    rotationDuration), 0.0, 1.0, 0.0 );
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    gluSphere(quad,planetRadius,100,100);
+        sf::Texture mercuryTexture;
+        mercuryTexture.setSmooth(true);
+        mercuryTexture.loadFromFile(textureName);
+        glColor3f(1,1,1);
+        sf::Texture::bind(&mercuryTexture);
+        gluQuadricTexture(quad, true);
+        glRotatef( orbitInclination, 0.0, 0.0, 1.0);
+        glRotatef( 360.0 * (CurrentEarthRotation/orbitDuration), 0.0, 1.0, 0.0);
+        glTranslatef(orbitRadius,0,0);
+        glRotatef( 360.0 * (CurrentEarthRotation /
+        rotationDuration), 0.0, 1.0, 0.0 );
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        gluSphere(quad,planetRadius,100,100);
     glPopMatrix();
 }
 
@@ -207,18 +203,32 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
 
     //Earth
     glPushMatrix();
-    sf::Texture earthTexture;
-    earthTexture.setSmooth(true);
-    earthTexture.loadFromFile(earthTexturePath);
-    glColor3f(1,1,1);
-    sf::Texture::bind(&earthTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef(earthInclination, 0.0, 0.0, 1.0);
-    glRotatef( 360.0 * (CurrentEarthRotation/earthOrbitDuration), 0.0, 1.0, 0.0);
-    glTranslatef(earthOrbitRadius,0,0);
-    glRotatef( 360.0 * (CurrentEarthRotation), 0.0, 1.0, 0.0 );
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    gluSphere(quad, earthRadius, 100, 100);
+        glPushMatrix();
+            sf::Texture earthTexture;
+            earthTexture.setSmooth(true);
+            earthTexture.loadFromFile(earthTexturePath);
+            glColor3f(1,1,1);
+            sf::Texture::bind(&earthTexture);
+            gluQuadricTexture(quad, true);
+            glRotatef(earthInclination, 0.0, 0.0, 1.0);
+            glRotatef( 360.0 * (CurrentEarthRotation/earthOrbitDuration), 0.0, 1.0, 0.0);
+            glTranslatef(earthOrbitRadius,0,0);
+            glRotatef( 360.0 * (CurrentEarthRotation), 0.0, 1.0, 0.0 );
+            glRotatef( 90.0, 1.0, 0.0, 0.0 );
+            gluSphere(quad, earthRadius, 100, 100);
+        glPopMatrix();
+        glRotatef(earthInclination, 0.0, 0.0, 1.0);
+        glRotatef( 360.0 * (CurrentEarthRotation/earthOrbitDuration), 0.0, 1.0, 0.0);
+        glTranslatef(earthOrbitRadius, 0.0, 0.0 );
+        glRotatef( 360.0 * (CurrentEarthRotation / lunarCycle), 0.0, 1.0, 0.0 );
+        glTranslatef(moonOrbitRadius  , 0.0, 0.0 );
+        sf::Texture moonTexture;
+        moonTexture.setSmooth(true);
+        moonTexture.loadFromFile(moonTexturePath);
+        glColor3f(1,1,1);
+        sf::Texture::bind(&moonTexture);
+        gluQuadricTexture(quad, true);
+        gluSphere(quad, moonRadius, 48, 48);
     glPopMatrix();
 
 
@@ -235,21 +245,21 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
 
     //Saturn Rings
     glPushMatrix();
-    sf::Texture saturnRingsTexture;
-    saturnRingsTexture.setSmooth(true);
-    saturnRingsTexture.loadFromFile(saturnRingTexturePath);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glPushMatrix();
-    sf::Texture::bind(&saturnRingsTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef(saturnInclination, 0.0, 0.0, 1.0);
-    glRotatef( 360.0 * (CurrentEarthRotation/saturnOrbitDuration), 0.0, 1.0, 0.0);
-    glTranslatef(saturnOrbitRadius, 0.0, 0.0 );
-    glRotatef( 360.0 * (CurrentEarthRotation /
-                        saturnRotationDuration), 0.0, 1.0, 0.0 );
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glScalef(1,1,.02);
-    gluSphere(quad, saturnRadius * 2, 100, 100);
+        sf::Texture saturnRingsTexture;
+        saturnRingsTexture.setSmooth(true);
+        saturnRingsTexture.loadFromFile(saturnRingTexturePath);
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glPushMatrix();
+        sf::Texture::bind(&saturnRingsTexture);
+        gluQuadricTexture(quad, true);
+        glRotatef(saturnInclination, 0.0, 0.0, 1.0);
+        glRotatef( 360.0 * (CurrentEarthRotation/saturnOrbitDuration), 0.0, 1.0, 0.0);
+        glTranslatef(saturnOrbitRadius, 0.0, 0.0 );
+        glRotatef( 360.0 * (CurrentEarthRotation /
+                            saturnRotationDuration), 0.0, 1.0, 0.0 );
+        glRotatef( 90.0, 1.0, 0.0, 0.0 );
+        glScalef(1,1,.02);
+        gluSphere(quad, saturnRadius * 2, 100, 100);
     glPopMatrix();
 
     //Uranus
