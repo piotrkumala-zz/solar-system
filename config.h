@@ -7,33 +7,43 @@
 #ifndef GRAFIKA3D_CONFIG_H
 #define GRAFIKA3D_CONFIG_H
 
-const GLfloat sunRadius = 		1.0;
-const GLfloat mercuryRadius =	0.05;
+const GLfloat sunRadius = 1.0;
+const GLfloat mercuryRadius = 0.05;
 const GLfloat venusRadius =	0.18;
-const GLfloat earthRadius =    0.19;
-const GLfloat marsRadius = 	0.09;
-const GLfloat jupiterRadius = 	0.6;
-const GLfloat saturnRadius = 	0.5;
-const GLfloat uranusRadius = 	0.3;
-const GLfloat neptuneRadius = 	0.3;
+const GLfloat earthRadius = 0.19;
+const GLfloat marsRadius = 0.09;
+const GLfloat jupiterRadius = 0.6;
+const GLfloat saturnRadius = 0.5;
+const GLfloat uranusRadius = 0.3;
+const GLfloat neptuneRadius = 0.3;
 
 const GLfloat mercuryOrbitRadius = 1.5;
-const GLfloat venusOrbitRadius =	 2.0;
-const GLfloat earthOrbitRadius = 	 2.5;
-const GLfloat marsOrbitRadius = 	 3.0;
+const GLfloat venusOrbitRadius = 2.0;
+const GLfloat earthOrbitRadius = 2.5;
+const GLfloat marsOrbitRadius = 3.0;
 const GLfloat jupiterOrbitRadius = 5.0;
 const GLfloat saturnOrbitRadius =  7.0;
-const GLfloat uranusOrbitRadius =	 8.5;
+const GLfloat uranusOrbitRadius = 8.5;
 const GLfloat neptuneOrbitRadius = 9.5;
 
-const GLfloat lightAmbient[]       = {0.5, 0.5, 0.5, 0.5};
-const GLfloat lightDiffuse[]       = {0.5, 0.5, 0.5, 0.5};
-const GLfloat lightSpecular[]      = {1.0, 1.0, 1.0, 1.0};
+const GLfloat mercuryInclination = 7;
+const GLfloat venusInclination = 3.4;
+const GLfloat marsInclination = 1.9;
+const GLfloat jupiterInclination = 1.3;
+const GLfloat saturnInclination = 2.5;
+const GLfloat uranusInclination = 0.8;
+const GLfloat neptuneInclination = 1.8;
+const GLfloat earthInclination = 0;
 
-const GLfloat light0Position[]    = {0.0, 1.1, 0.0, 0.0};
-const GLfloat light1Position[]    = {0.0, -1.1, 0.0, 0.0};
-const GLfloat light2Position[]    = {1.1, 0.0, 0.0, 0.0};
-const GLfloat light3Position[]    = {-1.1, 0.0, 0.0, 0.0};
+
+const GLfloat lightAmbient[] = {0.5, 0.5, 0.5, 0.5};
+const GLfloat lightDiffuse[] = {0.5, 0.5, 0.5, 0.5};
+const GLfloat lightSpecular[] = {1.0, 1.0, 1.0, 1.0};
+
+const GLfloat light0Position[] = {0.0, 1.1, 0.0, 0.0};
+const GLfloat light1Position[] = {0.0, -1.1, 0.0, 0.0};
+const GLfloat light2Position[] = {1.1, 0.0, 0.0, 0.0};
+const GLfloat light3Position[] = {-1.1, 0.0, 0.0, 0.0};
 
 const std::string sunTexturePath = "Textures/sunmap.bmp";
 const std::string mercuryTexturePath = "Textures/mercurymap.bmp";
