@@ -35,16 +35,16 @@ const GLfloat light1Position[]    = {0.0, -1.1, 0.0, 0.0};
 const GLfloat light2Position[]    = {1.1, 0.0, 0.0, 0.0};
 const GLfloat light3Position[]    = {-1.1, 0.0, 0.0, 0.0};
 
-const std::string sunTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/sunmap.bmp";
-const std::string mercuryTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/mercurymap.bmp";
-const std::string venusTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/venusmap.bmp";
-const std::string earthTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/earthmap.bmp";
-const std::string marsTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/marsmap.bmp";
-const std::string jupiterTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/jupitermap.bmp";
-const std::string saturnTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/saturnmap.bmp";
-const std::string saturnRingTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/saturnringmap.bmp";
-const std::string uranusTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/uranusmap.bmp";
-const std::string neptuneTexturePath = "/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/neptunemap.bmp";
+const std::string sunTexturePath = "Textures/sunmap.bmp";
+const std::string mercuryTexturePath = "Textures/mercurymap.bmp";
+const std::string venusTexturePath = "Textures/venusmap.bmp";
+const std::string earthTexturePath = "Textures/earthmap.bmp";
+const std::string marsTexturePath = "Textures/marsmap.bmp";
+const std::string jupiterTexturePath = "Textures/jupitermap.bmp";
+const std::string saturnTexturePath = "Textures/saturnmap.bmp";
+const std::string saturnRingTexturePath = "Textures/saturnringmap.bmp";
+const std::string uranusTexturePath = "Textures/uranusmap.bmp";
+const std::string neptuneTexturePath = "Textures/neptunemap.bmp";
 
 #endif //GRAFIKA3D_CONFIG_H
 
