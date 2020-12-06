@@ -86,8 +86,8 @@ int main()
         if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize(), fov); }
         if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize(), fov); }
 
-        if (sfk::isKeyPressed(sfk::Num9)) { EarthDayIncrement +=1; }
-        if (sfk::isKeyPressed(sfk::Num0)) { EarthDayIncrement -=1; }
+        if (sfk::isKeyPressed(sfk::Num9)) { EarthDayIncrement -=1; }
+        if (sfk::isKeyPressed(sfk::Num0)) { EarthDayIncrement +=1; }
         drawScene(camera, pos, scale, rot, CurrentEarthRotation);
         window.display();
     }
