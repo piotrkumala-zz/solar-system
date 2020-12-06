@@ -12,33 +12,31 @@ struct Spherical
     float getZ() const { return distance * std::cos(theta)*std::sin(fi); }
 };
 
-Spherical camera(30.0f, 0.2f, 1.2f);
-sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
-float fov = 45.0f;
-float timer = 0.0;
+void drawPlanet(GLUquadric *quad, const std::string& textureName, GLfloat orbitRadius, GLfloat planetRadius);
+
 
 void initOpenGL()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
-    glLightfv(GL_LIGHT0, GL_AMBIENT,  LIGHT_AMBIENT);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE,  LIGHT_DIFFUSE);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, LIGHT_SPECULAR);
-    glLightfv(GL_LIGHT0, GL_POSITION, LIGHT_0_POSITION);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
-    glLightfv(GL_LIGHT1, GL_DIFFUSE,  LIGHT_DIFFUSE);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, LIGHT_SPECULAR);
-    glLightfv(GL_LIGHT1, GL_POSITION, LIGHT_1_POSITION);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1Position);
 
-    glLightfv(GL_LIGHT2, GL_DIFFUSE,  LIGHT_DIFFUSE);
-    glLightfv(GL_LIGHT2, GL_SPECULAR, LIGHT_SPECULAR);
-    glLightfv(GL_LIGHT2, GL_POSITION, LIGHT_2_POSITION);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT2, GL_POSITION, light2Position);
 
-    glLightfv(GL_LIGHT3, GL_AMBIENT,  LIGHT_AMBIENT);
-    glLightfv(GL_LIGHT3, GL_DIFFUSE,  LIGHT_DIFFUSE);
-    glLightfv(GL_LIGHT3, GL_SPECULAR, LIGHT_SPECULAR);
-    glLightfv(GL_LIGHT3, GL_POSITION, LIGHT_3_POSITION);
+    glLightfv(GL_LIGHT3, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT3, GL_POSITION, light3Position);
 
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
@@ -47,12 +45,9 @@ void initOpenGL()
 
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
-
-    GLfloat light_ambient_global[4] = { 0.1,0.1,0.1, 0.1 };
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
 }
 
-void reshapeScreen(sf::Vector2u size)
+void reshapeScreen(sf::Vector2u size, float fov)
 {
     glViewport(0, 0, (GLsizei)size.x, (GLsizei)size.y);
     glMatrixMode(GL_PROJECTION);
@@ -63,7 +58,7 @@ void reshapeScreen(sf::Vector2u size)
 }
 
 
-void drawScene()
+void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
     glLoadIdentity();
@@ -96,139 +91,91 @@ void drawScene()
     glPushMatrix();
     sf::Texture sunTexture;
     sunTexture.setSmooth(true);
-    sunTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/sunmap.bmp");
+    sunTexture.loadFromFile(sunTexturePath);
     glEnable(GL_TEXTURE_2D);
     glColor3f(1,1,1);
     sf::Texture::bind(&sunTexture);
     gluQuadricTexture(quad, true);
     glTranslatef(0,0,0);
-    gluSphere(quad,SUN_RADIUS,100,100);
+    gluSphere(quad, sunRadius, 100, 100);
     glPopMatrix();
 
     //Mercury
-    glPushMatrix();
-    sf::Texture mercuryTexture;
-    mercuryTexture.setSmooth(true);
-    mercuryTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/mercurymap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&mercuryTexture);
-    gluQuadricTexture(quad, true);
-    glTranslatef(MERCURY_ORBIT_RADIUS,0,0);
-    gluSphere(quad,MERCURY_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, mercuryTexturePath, mercuryOrbitRadius, mercuryRadius);
 
     //Venus
-    glPushMatrix();
-    sf::Texture venusTexture;
-    venusTexture.setSmooth(true);
-    venusTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/venusmap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&venusTexture);
-    gluQuadricTexture(quad, true);
-    glTranslatef(VENUS_ORBIT_RADIUS,0,0);
-    gluSphere(quad,VENUS_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, venusTexturePath, venusOrbitRadius, venusRadius);
+
 
     //Earth
     glPushMatrix();
     sf::Texture earthTexture;
     earthTexture.setSmooth(true);
-    earthTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/earthmap.bmp");
+    earthTexture.loadFromFile(earthTexturePath);
     glColor3f(1,1,1);
     sf::Texture::bind(&earthTexture);
     gluQuadricTexture(quad, true);
     glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glTranslatef(EARTH_ORBIT_RADIUS,0,0);
-    gluSphere(quad, EARTH_RADIUS,100,100);
+    glTranslatef(earthOrbitRadius, 0, 0);
+    gluSphere(quad, earthRadius, 100, 100);
     glPopMatrix();
 
 
     //Mars
-    glPushMatrix();
-    sf::Texture matrixTexture;
-    matrixTexture.setSmooth(true);
-    matrixTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/marsmap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&matrixTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glTranslatef(MARS_ORBIT_RADIUS,0,0);
-    gluSphere(quad, MARS_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, marsTexturePath, marsOrbitRadius, marsRadius);
 
     //Jupiter
-    glPushMatrix();
-    sf::Texture jupiterTexture;
-    jupiterTexture.setSmooth(true);
-    jupiterTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/jupitermap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&jupiterTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glTranslatef(JUPITER_ORBIT_RADIUS,0,0);
-    gluSphere(quad, JUPITER_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, jupiterTexturePath, jupiterOrbitRadius, jupiterRadius);
 
     //Saturn
-    glPushMatrix();
-    sf::Texture saturnTexture;
-    saturnTexture.setSmooth(true);
-    saturnTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/saturnmap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&saturnTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glTranslatef(SATURN_ORBIT_RADIUS,0,0);
-    gluSphere(quad, SATURN_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, saturnTexturePath, saturnOrbitRadius, saturnRadius);
+
 
     //Saturn Rings
     glPushMatrix();
     sf::Texture saturnRingsTexture;
     saturnRingsTexture.setSmooth(true);
-    saturnRingsTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/saturnringmap.bmp");
+    saturnRingsTexture.loadFromFile(saturnRingTexturePath);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glPushMatrix();
     sf::Texture::bind(&saturnRingsTexture);
     gluQuadricTexture(quad, true);
-    glTranslatef(SATURN_ORBIT_RADIUS, 0.0, 0.0 );
+    glTranslatef(saturnOrbitRadius, 0.0, 0.0 );
     glRotatef( 90.0, 1.0, 0.0, 0.0 );
     glScalef(1,1,.02);
-    gluSphere(quad, SATURN_RADIUS*2, 100, 100);
+    gluSphere(quad, saturnRadius * 2, 100, 100);
     glPopMatrix();
 
     //Uranus
-    glPushMatrix();
-    sf::Texture uranusTexture;
-    uranusTexture.setSmooth(true);
-    uranusTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/uranusmap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&uranusTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glTranslatef(URANUS_ORBIT_RADIUS,0,0);
-    gluSphere(quad, URANUS_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, uranusTexturePath, uranusOrbitRadius, uranusRadius);
 
     //Neptune
-    glPushMatrix();
-    sf::Texture neptuneTexture;
-    neptuneTexture.setSmooth(true);
-    neptuneTexture.loadFromFile("/home/kumak98/CLionProjects/grafika3D/cmake-build-debug/Textures/neptunemap.bmp");
-    glColor3f(1,1,1);
-    sf::Texture::bind(&neptuneTexture);
-    gluQuadricTexture(quad, true);
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
-    glTranslatef(NEPTUNE_ORBIT_RADIUS,0,0);
-    gluSphere(quad, NEPTUNE_RADIUS,100,100);
-    glPopMatrix();
+    drawPlanet(quad, neptuneTexturePath, neptuneOrbitRadius, neptuneRadius);
 
     glDisable(GL_TEXTURE_2D);
     gluDeleteQuadric(quad);
 }
 
+void drawPlanet(GLUquadric *quad, const std::string& textureName, const GLfloat orbitRadius, const GLfloat planetRadius) {
+    glPushMatrix();
+    sf::Texture mercuryTexture;
+    mercuryTexture.setSmooth(true);
+    mercuryTexture.loadFromFile(textureName);
+    glColor3f(1,1,1);
+    sf::Texture::bind(&mercuryTexture);
+    gluQuadricTexture(quad, true);
+    glTranslatef(orbitRadius,0,0);
+    glRotatef(90.0, 1.0, 0.0, 0.0);
+    gluSphere(quad,planetRadius,100,100);
+    glPopMatrix();
+}
+
 int main()
 {
+    Spherical camera(20.0f, 0.2f, 1.2f);
+    sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
+    float fov = 45.0f;
+    float timer = 0.0;
     bool running = true;
     sf::ContextSettings context(24, 0, 4, 4, 5);
     sf::RenderWindow window(sf::VideoMode(800, 600), "Solar system", 7U, context);
@@ -237,7 +184,7 @@ int main()
     sf::Vector2i mouse_last_position(0, 0); //new
 
     window.setVerticalSyncEnabled(true);
-    reshapeScreen(window.getSize());
+    reshapeScreen(window.getSize(), fov);
     initOpenGL();
 
     while (running)
@@ -251,7 +198,7 @@ int main()
             shift_key_state = 1.0f;
 
             if (event.type == sfe::Closed || (event.type == sfe::KeyPressed && event.key.code == sfk::Escape) ) running = false;
-            if (event.type == sfe::Resized) reshapeScreen(window.getSize());
+            if (event.type == sfe::Resized) reshapeScreen(window.getSize(), fov);
             //---------------------- BEGIN new -------------------------------------------------------
             if (event.type == sfe::MouseButtonPressed &&  event.mouseButton.button == sf::Mouse::Left)
             {
@@ -281,10 +228,10 @@ int main()
         if (sfk::isKeyPressed(sfk::D)) rot.y += 0.5f*shift_key_state;
         if (sfk::isKeyPressed(sfk::C)) rot.z += 0.5f*shift_key_state;
 
-        if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize()); }
-        if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize()); }
+        if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize(), fov); }
+        if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize(), fov); }
 
-        drawScene();
+        drawScene(camera, pos, scale, rot);
         window.display();
     }
     return 0;
