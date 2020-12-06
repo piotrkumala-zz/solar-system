@@ -12,10 +12,13 @@ struct Spherical
     float getZ() const { return distance * std::cos(theta)*std::sin(fi); }
 };
 
-void drawPlanet(GLUquadric *quad, const std::string& textureName, const GLfloat orbitRadius, const GLfloat planetRadius, const GLfloat orbitInclination);
+void drawPlanet(GLUquadric *quad, const std::string &textureName, GLfloat orbitRadius, GLfloat planetRadius,
+                GLfloat orbitInclination, GLfloat CurrentEarthRotation, GLfloat rotationDuration,
+                GLfloat orbitDuration);
 void initOpenGL();
 void reshapeScreen(sf::Vector2u size, float fov);
-void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot);
+void
+drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot, GLfloat CurrentEarthRotation);
 
 
 int main()
@@ -24,6 +27,8 @@ int main()
     sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
     float fov = 45.0f;
     float timer = 0.0;
+    GLfloat CurrentEarthRotation;
+    GLfloat EarthDayIncrement = 1;
     bool running = true;
     sf::ContextSettings context(24, 0, 4, 4, 5);
     sf::RenderWindow window(sf::VideoMode(800, 600), "Solar system", 7U, context);
@@ -40,6 +45,8 @@ int main()
         sfe event;
         sf::Time elapsed = clock.restart();
         timer += elapsed.asSeconds();
+
+        CurrentEarthRotation = timer * EarthDayIncrement;
 
         while (window.pollEvent(event))
         {
@@ -79,13 +86,17 @@ int main()
         if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize(), fov); }
         if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize(), fov); }
 
-        drawScene(camera, pos, scale, rot);
+        if (sfk::isKeyPressed(sfk::Num9)) { EarthDayIncrement +=1; }
+        if (sfk::isKeyPressed(sfk::Num0)) { EarthDayIncrement -=1; }
+        drawScene(camera, pos, scale, rot, CurrentEarthRotation);
         window.display();
     }
     return 0;
 }
 
-void drawPlanet(GLUquadric *quad, const std::string& textureName, const GLfloat orbitRadius, const GLfloat planetRadius, const GLfloat orbitInclination) {
+void drawPlanet(GLUquadric *quad, const std::string &textureName, const GLfloat orbitRadius, const GLfloat planetRadius,
+                const GLfloat orbitInclination, const GLfloat CurrentEarthRotation, const GLfloat rotationDuration,
+                const GLfloat orbitDuration) {
     glPushMatrix();
     sf::Texture mercuryTexture;
     mercuryTexture.setSmooth(true);
@@ -94,7 +105,10 @@ void drawPlanet(GLUquadric *quad, const std::string& textureName, const GLfloat 
     sf::Texture::bind(&mercuryTexture);
     gluQuadricTexture(quad, true);
     glRotatef( orbitInclination, 0.0, 0.0, 1.0);
+    glRotatef( 360.0 * (CurrentEarthRotation/orbitDuration), 0.0, 1.0, 0.0);
     glTranslatef(orbitRadius,0,0);
+    glRotatef( 360.0 * (CurrentEarthRotation /
+    rotationDuration), 0.0, 1.0, 0.0 );
     glRotatef(90.0, 1.0, 0.0, 0.0);
     gluSphere(quad,planetRadius,100,100);
     glPopMatrix();
@@ -140,7 +154,8 @@ void initOpenGL() {
     glEnable(GL_COLOR_MATERIAL);
 }
 
-void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot) {
+void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot,
+               const GLfloat CurrentEarthRotation) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
     glLoadIdentity();
 
@@ -182,10 +197,12 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
     glPopMatrix();
 
     //Mercury
-    drawPlanet(quad, mercuryTexturePath, mercuryOrbitRadius, mercuryRadius, mercuryInclination);
+    drawPlanet(quad, mercuryTexturePath, mercuryOrbitRadius, mercuryRadius, mercuryInclination, CurrentEarthRotation,
+               mercuryRotationDuration, mercuryOrbitDuration);
 
     //Venus
-    drawPlanet(quad, venusTexturePath, venusOrbitRadius, venusRadius, venusInclination);
+    drawPlanet(quad, venusTexturePath, venusOrbitRadius, venusRadius, venusInclination, CurrentEarthRotation,
+               venusRotationDuration, venusOrbitDuration);
 
 
     //Earth
@@ -196,21 +213,24 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
     glColor3f(1,1,1);
     sf::Texture::bind(&earthTexture);
     gluQuadricTexture(quad, true);
-    glRotatef( 90.0, 1.0, 0.0, 0.0 );
     glRotatef(earthInclination, 0.0, 0.0, 1.0);
-    glTranslatef(earthOrbitRadius, 0, 0);
+    glRotatef( 360.0 * (CurrentEarthRotation/earthOrbitDuration), 0.0, 1.0, 0.0);
+    glTranslatef(earthOrbitRadius,0,0);
+    glRotatef( 360.0 * (CurrentEarthRotation), 0.0, 1.0, 0.0 );
+    glRotatef( 90.0, 1.0, 0.0, 0.0 );
     gluSphere(quad, earthRadius, 100, 100);
     glPopMatrix();
 
 
     //Mars
-    drawPlanet(quad, marsTexturePath, marsOrbitRadius, marsRadius, marsInclination);
+    drawPlanet(quad, marsTexturePath, marsOrbitRadius, marsRadius, marsInclination, CurrentEarthRotation,
+               marsRotationDuration, marsOrbitDuration);
 
     //Jupiter
-    drawPlanet(quad, jupiterTexturePath, jupiterOrbitRadius, jupiterRadius, jupiterInclination);
+    drawPlanet(quad, jupiterTexturePath, jupiterOrbitRadius, jupiterRadius, jupiterInclination, CurrentEarthRotation, jupiterRotationDuration, jupiterOrbitDuration);
 
     //Saturn
-    drawPlanet(quad, saturnTexturePath, saturnOrbitRadius, saturnRadius, saturnInclination);
+    drawPlanet(quad, saturnTexturePath, saturnOrbitRadius, saturnRadius, saturnInclination, CurrentEarthRotation, saturnRotationDuration, saturnOrbitDuration);
 
 
     //Saturn Rings
@@ -223,17 +243,20 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
     sf::Texture::bind(&saturnRingsTexture);
     gluQuadricTexture(quad, true);
     glRotatef(saturnInclination, 0.0, 0.0, 1.0);
+    glRotatef( 360.0 * (CurrentEarthRotation/saturnOrbitDuration), 0.0, 1.0, 0.0);
     glTranslatef(saturnOrbitRadius, 0.0, 0.0 );
+    glRotatef( 360.0 * (CurrentEarthRotation /
+                        saturnRotationDuration), 0.0, 1.0, 0.0 );
     glRotatef( 90.0, 1.0, 0.0, 0.0 );
     glScalef(1,1,.02);
     gluSphere(quad, saturnRadius * 2, 100, 100);
     glPopMatrix();
 
     //Uranus
-    drawPlanet(quad, uranusTexturePath, uranusOrbitRadius, uranusRadius, uranusInclination);
+    drawPlanet(quad, uranusTexturePath, uranusOrbitRadius, uranusRadius, uranusInclination, CurrentEarthRotation, uranusRotationDuration, uranusOrbitDuration);
 
     //Neptune
-    drawPlanet(quad, neptuneTexturePath, neptuneOrbitRadius, neptuneRadius, neptuneInclination);
+    drawPlanet(quad, neptuneTexturePath, neptuneOrbitRadius, neptuneRadius, neptuneInclination, CurrentEarthRotation, neptuneRotationDuration, neptuneOrbitDuration);
 
     glDisable(GL_TEXTURE_2D);
     gluDeleteQuadric(quad);

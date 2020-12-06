@@ -35,6 +35,22 @@ const GLfloat uranusInclination = 0.8;
 const GLfloat neptuneInclination = 1.8;
 const GLfloat earthInclination = 0;
 
+const GLfloat mercuryOrbitDuration = 88;
+const GLfloat venusOrbitDuration = 224.7;
+const GLfloat earthOrbitDuration = 365;
+const GLfloat marsOrbitDuration = 687.0;
+const GLfloat jupiterOrbitDuration = 4331;
+const GLfloat saturnOrbitDuration = 10747;
+const GLfloat uranusOrbitDuration = 30589;
+const GLfloat neptuneOrbitDuration = 59800;
+
+const GLfloat mercuryRotationDuration = 1407.6 / 23.9;
+const GLfloat venusRotationDuration = -5832.5 / 23.9;
+const GLfloat marsRotationDuration = 1;
+const GLfloat jupiterRotationDuration = 9.9/23.9;
+const GLfloat saturnRotationDuration = 10.7/23.9;
+const GLfloat uranusRotationDuration = -17.2/23.9;
+const GLfloat neptuneRotationDuration = 16.1/23.9;
 
 const GLfloat lightAmbient[] = {0.5, 0.5, 0.5, 0.5};
 const GLfloat lightDiffuse[] = {0.5, 0.5, 0.5, 0.5};
