@@ -2,24 +2,12 @@
 
 typedef sf::Event sfe;
 typedef sf::Keyboard sfk;
-
-struct Spherical
-{
-    float distance, theta, fi;
-    Spherical(float gdistance, float gtheta, float gfi) : distance(gdistance) , theta(gtheta), fi(gfi) { }
-    float getX() const { return distance * std::cos(theta)*std::cos(fi); }
-    float getY() const { return distance * std::sin(theta); }
-    float getZ() const { return distance * std::cos(theta)*std::sin(fi); }
-};
-
+void initOpenGL();
+void reshapeScreen(sf::Vector2u size, float fov);
+void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot, GLfloat CurrentEarthRotation);
 void drawPlanet(GLUquadric *quad, const std::string &textureName, GLfloat orbitRadius, GLfloat planetRadius,
                 GLfloat orbitInclination, GLfloat CurrentEarthRotation, GLfloat rotationDuration,
                 GLfloat orbitDuration);
-void initOpenGL();
-void reshapeScreen(sf::Vector2u size, float fov);
-void
-drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vector3f rot, GLfloat CurrentEarthRotation);
-
 
 int main()
 {

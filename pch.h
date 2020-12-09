@@ -15,5 +15,6 @@
 #include "materials.h"
 #include <cmath>
 #include "config.h"
+#include "spherical.h"
 
 #endif //UNTITLED_PCH_H

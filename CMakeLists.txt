@@ -7,6 +7,6 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED) # finding sfml directo
 file(COPY ${CMAKE_SOURCE_DIR}/Textures DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 
-add_executable(grafika3D main.cpp pch.h pch.cpp materials.h config.h)
+add_executable(grafika3D main.cpp pch.h pch.cpp materials.h config.h spherical.h)
 target_link_libraries(grafika3D ${OpenGlLinkers}) # linking opengl libraries to the project
 target_link_libraries(grafika3D sfml-graphics sfml-audio) # linking sfml libraries to the project
