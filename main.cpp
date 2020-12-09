@@ -160,21 +160,12 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
               0.0, 0.0, 0.0,
               north_of_camera.getX(), north_of_camera.getY(), north_of_camera.getZ());
 
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    glColor3f(1.0, 0.0, 0.0); glVertex3f(-100.0, 0, 0); glVertex3f(100.0, 0, 0);
-    glColor3f(0.0, 1.0, 0.0); glVertex3f(0, -100.0, 0); glVertex3f(0, 100.0, 0);
-    glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, -100.0); glVertex3f(0, 0, 100.0);
-    glEnd();
-
-
     glTranslatef(pos.x, pos.y, pos.z);
     glRotatef(rot.x, 1, 0, 0);
     glRotatef(rot.y, 0, 1, 0);
     glRotatef(rot.z, 0, 0, 1);
     glScalef(scale.x, scale.y, scale.z);
 
-    glEnable(GL_LIGHTING);
     GLUquadric *quad;
     quad = gluNewQuadric();
     gluQuadricNormals(quad, GLU_SMOOTH);
