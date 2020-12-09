@@ -249,7 +249,6 @@ void drawScene(Spherical camera, sf::Vector3f pos, sf::Vector3f scale, sf::Vecto
         saturnRingsTexture.setSmooth(true);
         saturnRingsTexture.loadFromFile(saturnRingTexturePath);
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glPushMatrix();
         sf::Texture::bind(&saturnRingsTexture);
         gluQuadricTexture(quad, true);
         glRotatef(saturnInclination, 0.0, 0.0, 1.0);
